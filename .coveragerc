@@ -1,0 +1,22 @@
+# .coveragerc to control coverage.py
+[run]
+source = geopandas_ext
+branch = True
+include = geopandas_ext/*.py
+omit =
+    geopandas_ext/tests/*
+
+[report]
+include = geopandas_ext/*.py
+ignore_errors = True
+omit =
+    geopandas_ext/tests/*
+
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    pass
