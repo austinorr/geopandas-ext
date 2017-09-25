@@ -3,6 +3,7 @@ CRS aware overlay operations for geopandas, with significant speed improvements.
 
 
 [![Build Status](https://travis-ci.org/austinorr/geopandas-ext.svg?branch=master)](https://travis-ci.org/austinorr/geopandas-ext)
+[![codecov](https://codecov.io/gh/austinorr/geopandas-ext/branch/master/graph/badge.svg)](https://codecov.io/gh/austinorr/geopandas-ext)
 
 ## Installation
 requires:
