@@ -1,11 +1,23 @@
 language: python
 
+sudo: false
+
+cache: pip
+
+addons:
+  apt:
+    packages:
+    - libgdal1h
+    - gdal-bin
+    - libgdal-dev
+    - libspatialindex-dev
+
 matrix:
   include:
     # - python: 2.7
     #   env:
     #     - COVERAGE=false
-    #     - TESTERS="pytest" 
+    #     - TESTERS="pytest"
     #     - ARGS="--verbose"
     # - python: 3.4
     #   env:
