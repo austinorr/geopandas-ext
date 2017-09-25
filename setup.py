@@ -15,12 +15,12 @@ with open('geopandas_ext//__init__.py') as info_file:
         elif line.startswith('__email__'):
             email = line.strip().split("=")[1].replace("'","").strip()
 
-# with open('README.rst') as readme_file:
-#     readme = readme_file.read()
+with open('README.md') as readme_file:
+    readme = readme_file.read()
 
-requirements = ["numpy", "pandas", "fiona", 
-                "shapely", "geopandas", "requests", "pyepsg",
-                "rtree", "libspatialindex",
+requirements = ["numpy", "pandas", "fiona",
+                "shapely", "geopandas", "requests",
+                "rtree", "pyepsg",
                 ]
 
 test_requirements = ['pytest>=3.1']
@@ -28,19 +28,17 @@ test_requirements = ['pytest>=3.1']
 setup(
     name='geopandas_ext',
     version=version,
-    description="Enhancements for `geopandas`",
-    long_description="",# TODO: readme,
+    description="Overlay enhancements for `geopandas`",
+    long_description=readme,
     author=author,
     author_email=email,
     url='https://github.com/austinorr/geopandas_ext',
     packages=find_packages(),
-    package_data=PACKAGE_DATA,
-    include_package_data=True,
     install_requires=requirements,
     extras_require={'testing': test_requirements},
     license="BSD license",
     zip_safe=False,
-    keywords=['gis', 'spatial overlay', 'pandas', 'geopandas'],
+    keywords=['gis', 'overlay', 'pandas', 'geopandas', 'epsg'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Geospatial Analysts, Scientists, Engineers',
