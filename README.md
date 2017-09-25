@@ -25,14 +25,14 @@ requires:
 This is a pure-python package, so building from source is easy on all platforms:
 
 ```
-git clone TODO
+git clone https://github.com/austinorr/geopandas-ext.git
 cd geopandas-ext
 pip install -e .
 ```
 
 ## Quick start
 
-Simply importing `probscale` lets you use probability scales in your matplotlib figures:
+Simply importing `geopandas_ext` lets you use the fast accurate spatial overlay functionality.
 
 ```python
 import geopandas
