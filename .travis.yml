@@ -4,13 +4,13 @@ sudo: false
 
 cache: pip
 
-addons:
-  apt:
-    packages:
-    - libgdal1h
-    - gdal-bin
-    - libgdal-dev
-    - libspatialindex-dev
+# addons:
+#   apt:
+#     packages:
+#     - libgdal1h
+#     - gdal-bin
+#     - libgdal-dev
+#     - libspatialindex-dev
 
 matrix:
   include:
@@ -51,6 +51,7 @@ install:
   - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy pandas
   - source activate test
   - conda install --yes --channel=conda-forge ${TESTERS} geopandas pyepsg
+  - conda install geos=3.5.0
   - pip install codecov
   # - pip install -r requirements.txt
   - pip install .
