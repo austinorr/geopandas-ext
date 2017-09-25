@@ -1,7 +1,8 @@
 # geopandas-ext
-CRS aware overlay operations for geopandas, with significant speed improvements.
+CRS aware overlay operations for geopandas, with significant speed improvements. Also includes additional convenience functions for geoprocessing such as exploding multipart geometries and obtaining spatial units from crs/epsg codes.
 
-additional convenience functions for geoprocessing such as exploding multipart geometries and obtaining spatial units from crs/epsg codes.
+
+[![Build Status](https://travis-ci.org/austinorr/geopandas-ext.svg?branch=master)](https://travis-ci.org/austinorr/geopandas-ext)
 
 ## Installation
 requires:
