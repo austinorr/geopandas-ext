@@ -2,7 +2,7 @@ import pytest
 
 import geopandas
 
-from ..epsg_utils import  epsg_to_dict, crs_units
+from geopandas_ext.epsg_utils import  epsg_to_dict, crs_units
 
 
 proj_ft = geopandas.read_file(geopandas.datasets.get_path('nybb')).crs

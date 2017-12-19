@@ -6,7 +6,7 @@ from shapely.geometry import Point, Polygon
 import geopandas
 from geopandas import GeoDataFrame, read_file
 
-from ..spatial_overlay import spatial_overlay as overlay
+from geopandas_ext.spatial_overlay import spatial_overlay as overlay
 
 import pytest
 
@@ -50,8 +50,8 @@ class TestDataFrame_orig:
         self.polydf = read_file(nybb_filename)
         self.crs = {'init': 'epsg:4326'}
 
-        # ALERT: The bounding coordinates of `polydf` are 913175.1, 120121.9, 
-        # 1067382.5, 272844.3, which make no sense in the epsg:4326 system, 
+        # ALERT: The bounding coordinates of `polydf` are 913175.1, 120121.9,
+        # 1067382.5, 272844.3, which make no sense in the epsg:4326 system,
         # which is in degrees. Tests passing under these conditions prove that
         # the overlay function must be capable of ignoring the crs information.
 
@@ -106,12 +106,12 @@ class TestDataFrame_orig:
         df = overlay(self.polydf, self.polydf2, how="symmetric_difference", **self.kwargs)
         # ALERT: the original algorithm creates invalid geometries.
         # Symmetric differece geometries should be in either polydf or polydf2.
-        # Any resulting geometries without attributes from one or the other is 
+        # Any resulting geometries without attributes from one or the other is
         # completely invalid.
 
         # assert df.shape == (122, 7) # this shape contains invalid geometries
 
-        # Use 'Shape_Area' as the field to indicate polydf and 'value1' as the 
+        # Use 'Shape_Area' as the field to indicate polydf and 'value1' as the
         # field for polydf2
         # df = geopandas.overlay(polydf, polydf2, how="symmetric_difference")
         # len(df.loc[(out['Shape_Area'].isnull()) & (df['value1'].isnull())])
@@ -237,12 +237,12 @@ class TestDataFrame_nocrs:
         df = overlay(self.polydf, self.polydf2, how="symmetric_difference", **self.kwargs)
         # ALERT: the original algorithm creates invalid geometries.
         # Symmetric differece geometries should be in either polydf or polydf2.
-        # Any resulting geometries without attributes from one or the other is 
+        # Any resulting geometries without attributes from one or the other is
         # completely invalid.
 
         # assert df.shape == (122, 7) # this shape contains invalid geometries
 
-        # Use 'Shape_Area' as the field to indicate polydf and 'value1' as the 
+        # Use 'Shape_Area' as the field to indicate polydf and 'value1' as the
         # field for polydf2
         # df = geopandas.overlay(polydf, polydf2, how="symmetric_difference")
         # len(df.loc[(out['Shape_Area'].isnull()) & (df['value1'].isnull())])
