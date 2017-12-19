@@ -14,26 +14,26 @@ cache: pip
 
 matrix:
   include:
-    # - python: 2.7
-    #   env:
-    #     - COVERAGE=false
-    #     - TESTERS="pytest"
-    #     - ARGS="--verbose"
-    # - python: 3.4
-    #   env:
-    #     - COVERAGE=false
-    #     - TESTERS="pytest coverage"
-    #     - ARGS="--verbose"
+    - python: 2.7
+      env:
+        - COVERAGE=false
+        - TESTERS="pytest"
+        - ARGS="--verbose"
+    - python: 3.4
+      env:
+        - COVERAGE=false
+        - TESTERS="pytest"
+        - ARGS="--verbose"
     - python: 3.5
       env:
         - COVERAGE=true
         - TESTERS="pytest coverage"
         - ARGS="--verbose"
-    # - python: 3.6
-    #   env:
-    #     - COVERAGE=true
-    #     - TESTERS="pytest coverage"
-    #     - ARGS="--verbose"
+    - python: 3.6
+      env:
+        - COVERAGE=false
+        - TESTERS="pytest"
+        - ARGS="--verbose"
 
 # Install, update, and setup Miniconda
 # This should not need changing.

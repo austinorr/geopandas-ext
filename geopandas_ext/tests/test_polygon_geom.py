@@ -5,7 +5,7 @@ from geopandas import GeoDataFrame, read_file
 
 from shapely.geometry import Point
 
-from ..polygon_geom import  explode_multipart_polygons, gdf_bbox
+from geopandas_ext.polygon_geom import  explode_multipart_polygons, gdf_bbox
 
 
 def test_gdf_bbox():
@@ -43,10 +43,10 @@ class TestExplodeMultipartPolygons:
 
     def test_explode_multipart_polygons(self):
         polydf_ex = explode_multipart_polygons(self.polydf)
-
+        assert self.polydf.crs == polydf_ex.crs
         assert polydf_ex.shape == (106, 5)
 
     def test_explode_multipart_polygons_singlepart(self):
         polydf2_ex = explode_multipart_polygons(self.polydf2)
-
+        assert self.polydf2.crs == polydf2_ex.crs
         assert polydf2_ex.shape == (11, 3)

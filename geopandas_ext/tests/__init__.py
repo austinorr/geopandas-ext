@@ -1,7 +1,5 @@
 from pkg_resources import resource_filename
 
-import geopandas_ext
-
 try:
     import pytest
     def test(*args):
