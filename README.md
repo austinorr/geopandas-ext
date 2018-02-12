@@ -60,6 +60,10 @@ _ = uniondf.plot(cmap='Paired')
 
 ![Alt text](docs/img/example.png "Example Spatial Overlay")
 
+
+Additional discussion of the new spatial_overlay implementation can be found in this little ![Gist](http://nbviewer.jupyter.org/gist/austinorr/6fca2c1bd724b1c4885dcac368022ae9)
+
+
 ## Testing
 
 Testing is done via the `pytest` module.
