@@ -30,14 +30,13 @@ before_install:
   - ./miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda update --yes conda
-  - conda install --yes nomkl
 
 # We just set up a conda environment with the right Python version.
 # This should not need changing.
 install:
-  - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy pandas
+  - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION nomkl numpy pandas
   - source activate test
-  - conda install --yes --channel=conda-forge ${TESTERS} geopandas pyepsg
+  - conda install --yes --channel=conda-forge ${TESTERS} geopandas fiona shapely gdal pyepsg
   - pip install codecov
   - pip install .
 
