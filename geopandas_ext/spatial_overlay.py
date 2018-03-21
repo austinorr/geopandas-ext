@@ -46,29 +46,6 @@ def spatial_overlay(df1, df2, how='intersection', reproject=True, explode=False,
     Overlay Operations: http://wiki.gis.com/wiki/index.php/Overlay
 
     """
-    df1 = df1.copy()
-    df2 = df2.copy()
-
-    if keep_index:
-        df1['idx1'] = range(len(df1))
-        df2['idx2'] = range(len(df2))
-    df_out = _calculate_overlay(
-        df1, df2, how=how, reproject=reproject, **kwargs)
-
-    if explode:
-        return explode_multipart_polygons(df_out)
-
-    return df_out
-
-
-def _calculate_overlay(df1, df2, how, reproject, **kwargs):
-    """
-    Contributors: https://github.com/ozak
-        Provided the algorithmic outline for performing the intersection and
-        difference functions. His work for geopandas PR: Overlay performance #429
-        was adapted and modified to enhance readibility, performance,
-        and to improve the test framework.
-    """
 
     # Allowed operations
     allowed_hows = [
@@ -76,13 +53,15 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
         'union',
         'identity',
         'symmetric_difference',
-        'difference',  # aka erase
+        'difference', 'erase',
     ]
 
     # Error Messages
     if how not in allowed_hows:
-        raise ValueError("`how` was \"%s\" but is expected to be in %s" %
-                         (how, allowed_hows))
+        raise ValueError(
+            "`how` was {} but is expected to be in {}".format(
+                how, allowed_hows)
+        )
 
     if isinstance(df1, GeoSeries) or isinstance(df2, GeoSeries):
         raise NotImplementedError(
@@ -100,16 +79,6 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
     df1 = df1.copy()
     df2 = df2.copy()
 
-    for df in [df1, df2]:
-        if 'geometry' != df.geometry.name:
-            if 'geometry' in df.columns:
-                df.drop('geometry', axis=1, inplace=True)
-            df.rename(columns={df.geometry.name: 'geometry'}, inplace=True)
-            df.set_geometry('geometry', inplace=True)
-
-    df1.geometry = df1.geometry.buffer(0)
-    df2.geometry = df2.geometry.buffer(0)
-
     if df1.crs != df2.crs and reproject:
         warnings.warn(
             'Data has different projections.\n'
@@ -119,6 +88,40 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
 
     else:
         df2.crs = df1.crs
+
+    if keep_index:
+        df1['idx1'] = range(len(df1))
+        df2['idx2'] = range(len(df2))
+
+    for df in [df1, df2]:
+        if 'geometry' != df.geometry.name:
+            if 'geometry' in df.columns:
+                df.drop('geometry', axis=1, inplace=True)
+            df.rename(columns={df.geometry.name: 'geometry'}, inplace=True)
+            df.set_geometry('geometry', inplace=True)
+
+        if not all(df.geometry.is_valid):
+            df.geometry = df.geometry.buffer(0)
+
+    df_out = _calculate_overlay(df1, df2, how=how)
+
+    if explode:
+        return explode_multipart_polygons(df_out)
+
+    return df_out
+
+
+def _calculate_overlay(df1, df2, how):
+    """
+    Contributors: https://github.com/ozak
+        Provided the algorithmic outline for performing the intersection and
+        difference functions. His work for geopandas PR: Overlay performance #429
+        was adapted and modified to enhance readibility, performance,
+        and to improve the test framework.
+    """
+
+    df1 = df1.copy()
+    df2 = df2.copy()
 
     if how == 'intersection':
         # Spatial Index to create intersections
@@ -152,7 +155,7 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
         else:
             return GeoDataFrame([], columns=list(set(df1.columns).union(df2.columns)), crs=df1.crs)
 
-    elif how == 'difference':
+    elif how in ['difference', 'erase']:
         spatial_index = df2.sindex
 
         df1['bbox'] = df1.geometry.apply(lambda x: x.bounds)
@@ -173,31 +176,27 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
 
     elif how == 'symmetric_difference':
         s1 = _calculate_overlay(
-            df1, df2, how='difference', reproject=reproject)
+            df1, df2, how='difference')
         s2 = _calculate_overlay(
-            df2, df1, how='difference', reproject=reproject)
-        if reproject:
-            s2.to_crs(s1.crs, inplace=True)
+            df2, df1, how='difference')
         s3 = pandas.concat([s1, s2]).reset_index(drop=True)
         return s3
 
     elif how == 'union':
         s1 = _calculate_overlay(
-            df1, df2, how='intersection', reproject=reproject)
+            df1, df2, how='intersection')
         s2 = _calculate_overlay(
-            df1, df2, how='difference', reproject=reproject)
+            df1, df2, how='difference')
         s3 = _calculate_overlay(
-            df2, df1, how='difference', reproject=reproject)
-        if reproject:
-            s3.to_crs(s1.crs, inplace=True)
+            df2, df1, how='difference')
         s4 = pandas.concat([s1, s2, s3]).reset_index(drop=True)
         return s4
 
     elif how == 'identity':
         s1 = _calculate_overlay(
-            df1, df2, how='difference', reproject=reproject)
+            df1, df2, how='difference')
         s2 = _calculate_overlay(
-            df1, df2, how='intersection', reproject=reproject)
+            df1, df2, how='intersection')
         s3 = pandas.concat([s1, s2]).reset_index(drop=True)
         return s3
 
@@ -213,7 +212,6 @@ def _calculate_overlay(df1, df2, how, reproject, **kwargs):
     #         df2, df1, how='difference', reproject=reproject)
     #     s2 = pandas.concat([df1, s1]).reset_index(drop=True)
     #     return s2
-
 
     else:
         raise NotImplementedError(how)
