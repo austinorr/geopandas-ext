@@ -142,7 +142,7 @@ def _calculate_overlay(df1, df2, how):
                 .assign(
                     Intersection=lambda _df:
                         _df.apply(
-                            lambda x: (x['geometry_1'].intersection(x['geometry_2'])).buffer(0), axis=1)
+                            lambda x: (x['geometry_1'].intersection(x['geometry_2'])), axis=1)
                 )
                 .drop(['pidx1', 'pidx2', 'geometry_1', 'geometry_2', 'sidx', 'bbox'], axis=1)
                 .rename(columns={'Intersection': 'geometry'})
@@ -153,7 +153,8 @@ def _calculate_overlay(df1, df2, how):
             dfinter = dfinter.loc[dfinter.geometry.is_empty == False]
             return dfinter.reset_index(drop=True)
         else:
-            return GeoDataFrame([], columns=list(set(df1.columns).union(df2.columns)), crs=df1.crs)
+            columns = list(set(df1.columns).union(df2.columns))
+            return GeoDataFrame([], columns=columns, crs=df1.crs)
 
     elif how in ['difference', 'erase']:
         spatial_index = df2.sindex
@@ -164,7 +165,7 @@ def _calculate_overlay(df1, df2, how):
         df1['new_g'] = df1.apply(
             lambda x: reduce(
                 lambda x, y:
-                    x.difference(y).buffer(0),
+                    x.difference(y),
                     [x.geometry] + list(df2.iloc[x.sidx].geometry)
             ), axis=1
         )
